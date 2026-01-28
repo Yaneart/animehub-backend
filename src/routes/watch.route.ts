@@ -6,12 +6,6 @@ const router = Router();
 const ANICLI_URL =
   process.env.ANICLI_URL || "http://localhost:8001";
 
-/**
- * =========================
- * 🔥 WATCH SOURCES
- * =========================
- * ВАЖНО: этот роут ДОЛЖЕН быть ВЫШЕ `/:animeId`
- */
 router.get("/sources", async (req, res) => {
   const { title, episode } = req.query;
 
@@ -43,11 +37,6 @@ router.get("/sources", async (req, res) => {
   }
 });
 
-/**
- * =========================
- * 🔒 WATCH v1 (STABLE)
- * =========================
- */
 router.get("/:animeId", async (req, res) => {
   const animeId = Number(req.params.animeId);
   const title = String(req.query.title);

@@ -1,0 +1,43 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const watch_service_1 = require("../services/watch.service");
+const router = (0, express_1.Router)();
+const ANICLI_URL = process.env.ANICLI_URL || "http://localhost:8001";
+router.get("/sources", async (req, res) => {
+    const { title, episode } = req.query;
+    if (!title || !episode) {
+        return res.status(400).json({
+            error: "title and episode are required",
+        });
+    }
+    try {
+        const response = await fetch(`${ANICLI_URL}/watch/sources?title=${encodeURIComponent(String(title))}&episode=${episode}`);
+        if (!response.ok) {
+            return res.status(500).json({
+                error: "anicli sources error",
+            });
+        }
+        const data = await response.json();
+        return res.json(data);
+    }
+    catch (error) {
+        return res.status(500).json({
+            error: "anicli service unavailable",
+        });
+    }
+});
+router.get("/:animeId", async (req, res) => {
+    const animeId = Number(req.params.animeId);
+    const title = String(req.query.title);
+    try {
+        const data = await (0, watch_service_1.getWatchPlayer)(animeId, title);
+        res.json(data);
+    }
+    catch (error) {
+        res.status(500).json({
+            error: "watch player error",
+        });
+    }
+});
+exports.default = router;
