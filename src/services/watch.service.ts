@@ -1,5 +1,8 @@
-const ANICLI_URL =
-  process.env.ANICLI_URL || "http://localhost:8001";
+const ANICLI_URL = process.env.ANICLI_URL;
+
+if (!ANICLI_URL) {
+  throw new Error("ANICLI_URL is not defined");
+}
 
 export async function getWatchPlayer(
   animeId: number,

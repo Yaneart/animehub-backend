@@ -3,15 +3,19 @@ import { getWatchPlayer } from "../services/watch.service";
 
 const router = Router();
 
-const ANICLI_URL =
-  process.env.ANICLI_URL || "http://localhost:8001";
-
 router.get("/sources", async (req, res) => {
   const { title, episode } = req.query;
 
   if (!title || !episode) {
     return res.status(400).json({
       error: "title and episode are required",
+    });
+  }
+
+  const ANICLI_URL = process.env.ANICLI_URL;
+  if (!ANICLI_URL) {
+    return res.status(500).json({
+      error: "ANICLI_URL is not defined",
     });
   }
 
@@ -23,16 +27,14 @@ router.get("/sources", async (req, res) => {
     );
 
     if (!response.ok) {
-      return res.status(500).json({
-        error: "anicli sources error",
-      });
+      throw new Error("anicli response not ok");
     }
 
     const data = await response.json();
     return res.json(data);
   } catch (error) {
     return res.status(500).json({
-      error: "anicli service unavailable",
+      error: "anicli sources error",
     });
   }
 });
