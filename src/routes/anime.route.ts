@@ -14,7 +14,7 @@ router.get("/random", async (req, res) => {
 
   try {
     const { data } = await jikanApi.get("/random/anime");
-    setCache(cacheKey, data, 30_000); // 30 сек
+    setCache(cacheKey, data, 30_000);
     res.json(data);
   } catch (e: any) {
     res.status(e.response?.status || 500).json({
